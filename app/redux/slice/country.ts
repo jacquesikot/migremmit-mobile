@@ -94,6 +94,10 @@ const countrySlice = createSlice({
           name: action.payload.currencyName,
         },
       ];
+      state.activeFromCurrency = {
+        code: action.payload.code,
+        name: action.payload.currencyName,
+      };
     },
     setActiveToCountry: (state, action: PayloadAction<Country>) => {
       state.activeToCountry = action.payload;

@@ -1,18 +1,20 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useQuery } from 'react-query';
 
-import theme, { Box, Text } from '../theme';
-import AppHeader from '../components/AppHeader';
-import CountryPicker from '../components/CountryPicker';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { getAllCountries } from '../api/countries';
-import OverlayLoader from '../components/OverlayLoader';
-import CurrencyInput from '../components/CurrencyInput';
+import AppHeader from '../components/AppHeader';
 import Button from '../components/Button';
+import CountryPicker from '../components/CountryPicker';
+import CurrencyInput from '../components/CurrencyInput';
+import CurrencyPicker from '../components/CurrencyPicker';
+import OverlayLoader from '../components/OverlayLoader';
+import { HomeNavStackProps } from '../navigation/HomeNav';
 import { useAppDispatch } from '../redux/hooks';
 import { Country, setCountries } from '../redux/slice/country';
-import CurrencyPicker from '../components/CurrencyPicker';
+import theme, { Box, Text } from '../theme';
 
 const styles = StyleSheet.create({
   container: {
@@ -43,9 +45,7 @@ const styles = StyleSheet.create({
   },
 });
 
-interface HomeProps {}
-
-const Home = () => {
+const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'>) => {
   const dispatch = useAppDispatch();
   const getCountriesQuery = useQuery({
     queryKey: 'countries',
@@ -90,7 +90,7 @@ const Home = () => {
               <Button
                 label="Compare"
                 variant="secondary"
-                onPress={() => true}
+                onPress={() => navigation.navigate('Details', { amount: parseInt(amount, 10) })}
                 containerStyle={{ marginTop: 20 }}
                 disabled={amount.length < 1}
               />

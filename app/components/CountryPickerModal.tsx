@@ -65,13 +65,17 @@ const CountryPickerModal = (props: CountryPickerModalProps) => {
   const [filteredCountries, setFilteredCountries] = React.useState<Country[]>(countries);
 
   useEffect(() => {
-    if (searchText === '') {
+    if (searchText.length === 0) {
       setFilteredCountries(countries);
       return;
     }
     const filtered = countries.filter((country) => country.name.toLowerCase().includes(searchText.toLowerCase()));
     setFilteredCountries(filtered);
   }, [searchText, countries]);
+
+  useEffect(() => {
+    setFilteredCountries(countries);
+  }, [props.visible]);
 
   const renderItem = ({ item }: any) => (
     <TouchableOpacity
