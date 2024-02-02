@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from '@shopify/restyle';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+import RootNavigation from './app/navigation';
+import theme from './app/theme';
+import { store } from './app/redux/store';
 
 export default function App() {
+  const queryClient = new QueryClient();
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={theme}>
+            <RootNavigation />
+          </ThemeProvider>
+        </QueryClientProvider>
+      </Provider>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
