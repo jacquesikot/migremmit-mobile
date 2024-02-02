@@ -1,6 +1,6 @@
 import { createBox, createText, createTheme } from '@shopify/restyle';
 
-const primaryColor = '#7DB925';
+const primaryColor = '#51C634';
 const secondaryColor = '#FB8C3B';
 
 const palette = {
