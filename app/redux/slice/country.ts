@@ -5,6 +5,7 @@ export interface Country {
   code: string;
   flagUrl: string;
   currencyName: string;
+  currencyCode: string;
 }
 
 export interface Currency {
@@ -56,15 +57,17 @@ const initialState: CountryState = {
   countries: [],
   activeToCountry: {
     name: 'Zambia',
-    code: 'ZMW',
+    code: 'ZM',
     flagUrl: 'https://flagcdn.com/w320/zm.png',
     currencyName: 'Zambian kwacha',
+    currencyCode: 'ZMW',
   },
   activeFromCountry: {
     name: 'United States',
     code: 'USD',
     flagUrl: 'https://flagcdn.com/w320/us.png',
     currencyName: 'United States dollar',
+    currencyCode: 'USD',
   },
   activeFromCurrency: {
     code: 'USD',
@@ -95,7 +98,7 @@ const countrySlice = createSlice({
         },
       ];
       state.activeFromCurrency = {
-        code: action.payload.code,
+        code: action.payload.currencyCode,
         name: action.payload.currencyName,
       };
     },
@@ -108,6 +111,10 @@ const countrySlice = createSlice({
           name: action.payload.currencyName,
         },
       ];
+      state.activeToCurrency = {
+        code: action.payload.currencyCode,
+        name: action.payload.currencyName,
+      };
     },
     setFromCurrency: (state, action: PayloadAction<Currency>) => {
       state.activeFromCurrency = action.payload;

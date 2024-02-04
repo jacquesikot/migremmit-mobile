@@ -20,10 +20,11 @@ interface ButtonProps {
   onPress: () => void;
   variant?: 'primary' | 'secondary';
   containerStyle?: any;
-  disabled?: boolean; // New prop for disabled mode
+  disabled?: boolean;
+  width?: number;
 }
 
-const Button = ({ label, onPress, variant = 'primary', containerStyle, disabled }: ButtonProps) => {
+const Button = ({ label, onPress, variant = 'primary', containerStyle, disabled, width }: ButtonProps) => {
   const backgroundColor = disabled
     ? theme.colors.backgroundDisabled
     : variant === 'primary'
@@ -39,7 +40,12 @@ const Button = ({ label, onPress, variant = 'primary', containerStyle, disabled 
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.7} onPress={handlePress} style={containerStyle} disabled={disabled}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={handlePress}
+      style={{ ...containerStyle, ...{ width: width ? width : undefined } }}
+      disabled={disabled}
+    >
       <Box style={[styles.container, { backgroundColor }]} opacity={disabled ? 0.5 : 1}>
         <Text variant="button" color={textColor}>
           {label}

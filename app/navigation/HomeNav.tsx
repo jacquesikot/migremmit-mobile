@@ -3,12 +3,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../screens/Home';
 import Details from '../screens/Details';
 
-export interface HomeNavStackProps extends Record<string, object | undefined> {
+export type HomeNavStackProps = {
   Search: undefined;
   Details: {
     amount: number;
   };
-}
+};
 
 const Stack = createNativeStackNavigator<HomeNavStackProps>();
 

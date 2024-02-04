@@ -36,6 +36,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: theme.spacing.xl,
     padding: theme.spacing.m,
+    borderWidth: 1,
+    borderColor: theme.colors.lightGrey,
   },
   line: {
     width: '100%',
@@ -56,9 +58,10 @@ const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'
         const currencyKey = country.currencies && Object.keys(country.currencies)[0];
         return {
           name: country.name.common,
-          code: currencyKey,
+          code: country.cca2,
           flagUrl: country.flags.png,
           currencyName: country.currencies && country.currencies[currencyKey].name,
+          currencyCode: currencyKey,
         };
       })
     : [];

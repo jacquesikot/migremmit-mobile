@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import theme, { Box, Text } from '../theme';
@@ -24,11 +24,16 @@ const styles = StyleSheet.create({
 interface AppHeaderProps {
   title: string;
   showBackButton?: boolean;
+  navigation?: any; // find correct type here later
 }
 const AppHeader = (props: AppHeaderProps) => {
   return (
     <Box style={styles.container}>
-      {props.showBackButton && <Ionicons name="arrow-back-outline" size={18} color="black" />}
+      {props.showBackButton && (
+        <TouchableOpacity onPress={() => props.navigation.goBack()}>
+          <Ionicons name="arrow-back-outline" size={18} color="black" />
+        </TouchableOpacity>
+      )}
       <Box marginLeft="m">
         {props.showBackButton ? (
           <Text variant="subTitle">{props.title}</Text>
