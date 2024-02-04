@@ -50,12 +50,14 @@ const CountryPicker = (props: CountryPickerProps) => {
           {props.isFrom ? 'COUNTRY FROM' : 'COUNTRY TO'}
         </Text>
         <Box style={styles.selectContainer}>
+          <TouchableOpacity  onPress={() => setModalVisible(!modalVisible)}>
           <Box style={styles.selectContainerItem}>
             <Image source={{ uri: activeCountry.flagUrl }} style={{ width: 20, height: 15, borderRadius: 3 }} />
             <Text variant="body" ml="s" style={{ fontFamily: 'InterSemibold', width: '80%' }} numberOfLines={1}>
               {activeCountry.name}
             </Text>
           </Box>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => setModalVisible(true)}>
             <Feather name="chevron-down" size={24} color="black" />
           </TouchableOpacity>
