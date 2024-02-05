@@ -56,7 +56,7 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
     currencyTo: activeToCurrency.code,
     amount: route.params.amount,
   };
-  console.log(activeFromCountry);
+  // console.log(activeFromCountry);
   const getRemittanceMutation = useMutation((data: GetRemittanceProvidersRequest) => getRemittanceProviders(data), {
     onSuccess: (data) => {
       // console.log(data);
