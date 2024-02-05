@@ -2,8 +2,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
-
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+
 import { getAllCountries } from '../api/countries';
 import AppHeader from '../components/AppHeader';
 import Button from '../components/Button';
@@ -15,6 +15,7 @@ import { HomeNavStackProps } from '../navigation/HomeNav';
 import { useAppDispatch } from '../redux/hooks';
 import { Country, setCountries } from '../redux/slice/country';
 import theme, { Box, Text } from '../theme';
+import useCreateMessage from '../language/createMessage';
 
 const styles = StyleSheet.create({
   container: {
@@ -66,6 +67,7 @@ const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'
       })
     : [];
   const [amount, setAmount] = React.useState('50');
+  const { createMessage } = useCreateMessage();
 
   useEffect(() => {
     dispatch(setCountries(countries));
@@ -79,7 +81,7 @@ const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'
           <AppHeader title="Home" />
           <LinearGradient colors={[theme.colors.primary, theme.colors.white]} style={styles.gradient}>
             <Text variant="subTitle" color="white" style={styles.headerText}>
-              Compare international money transfers and save
+              {createMessage('COMPARE_INTERNATIONAL_MONEY_TRANSFERS_AND_SAVE')}
             </Text>
             <Box style={styles.pickerBox}>
               <CountryPicker isFrom />
