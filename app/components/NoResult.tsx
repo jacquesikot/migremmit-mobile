@@ -4,6 +4,8 @@ import { Feather } from '@expo/vector-icons';
 
 import Button from './Button';
 import theme, { Box, Text } from '../theme';
+import { numberWithCommas } from '../utils';
+import { useAppSelector } from '../redux/hooks';
 
 const styles = StyleSheet.create({
   container: {
@@ -18,23 +20,30 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'InterRegular',
     color: theme.colors.text,
-    marginBottom: theme.spacing.xs,
+    marginVertical: theme.spacing.s,
   },
   titleText: {
     fontSize: 16,
     fontFamily: 'InterRegular',
     color: theme.colors.text,
     fontWeight: '400',
-    marginBottom: theme.spacing.s,
+    marginVertical: theme.spacing.s,
     textAlign: 'center',
+    lineHeight: 23,
   },
 });
 
 interface NoResultProps {
   navigation: any;
+  amount: number;
 }
 const NoResult = (props: NoResultProps) => {
-  const generateTitleText = `We could not find any providers who'd transfer 1,000 ALL from Albania to Zambia.`;
+  const activeFromCurrency = useAppSelector((state) => state.country.activeFromCurrency);
+  const activeFromCountry = useAppSelector((state) => state.country.activeFromCountry);
+  const activeToCountry = useAppSelector((state) => state.country.activeToCountry);
+  const generateTitleText = `We could not find any providers who'd transfer ${
+    numberWithCommas(props.amount.toString()) + ' ' + activeFromCurrency
+  } from ${activeFromCountry.name} to ${activeToCountry.name}.`;
   return (
     <Box style={styles.container}>
       <Feather name="alert-circle" size={30} color={theme.colors.secondary} />
@@ -42,9 +51,17 @@ const NoResult = (props: NoResultProps) => {
         No results
       </Text>
       <Text variant="subTitle" style={styles.titleText}>
-        We could not find any providers who'd transfer 1,000 ALL from Albania to Zambia.
+        {generateTitleText}
       </Text>
-      <Button label="Try new search" variant="secondary" onPress={() => true} width={200} />
+      <Button
+        label="Try new search"
+        variant="secondary"
+        onPress={() => props.navigation.goBack()}
+        width={200}
+        containerStyle={{
+          marginTop: theme.spacing.m,
+        }}
+      />
     </Box>
   );
 };

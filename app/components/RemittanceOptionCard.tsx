@@ -10,7 +10,7 @@ import { numberWithCommas } from '../utils';
 const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.white,
-    height: 130,
+    height: 140,
     padding: 10,
     width: 150,
     marginRight: 10,
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     fontFamily: 'InterLight',
     fontWeight: '300',
     color: theme.colors.text,
+    marginVertical: theme.spacing.xs,
   },
   bestValueText: {
     fontSize: 11,
@@ -77,10 +78,15 @@ const RemittanceOptionCard = (props: RemittanceOptionCardProps) => {
     }
   };
 
-  const activeStyle = props.active ? { borderColor: theme.colors.primary, borderBottomWidth: 3 } : {};
+  const activeStyle = props.active ? { borderColor: theme.colors.black, borderBottomWidth: 3 } : {};
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={props.handleOnPress} style={{ ...styles.container, ...activeStyle }}>
-      <MaterialCommunityIcons name={returnIconFromPayoutType()} size={24} color="black" />
+      <MaterialCommunityIcons
+        name={returnIconFromPayoutType()}
+        size={24}
+        color="black"
+        style={{ marginBottom: theme.spacing.xs }}
+      />
       <Text style={styles.transferText} variant="subTitle">
         Transfer to
       </Text>

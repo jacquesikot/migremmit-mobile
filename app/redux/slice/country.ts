@@ -64,7 +64,7 @@ const initialState: CountryState = {
   },
   activeFromCountry: {
     name: 'United States',
-    code: 'USD',
+    code: 'US',
     flagUrl: 'https://flagcdn.com/w320/us.png',
     currencyName: 'United States dollar',
     currencyCode: 'USD',

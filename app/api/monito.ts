@@ -99,6 +99,25 @@ export interface PayoutMethod {
   isBestValue: boolean;
 }
 
+export interface RemittanceProvider {
+  displayName: string;
+  type: string;
+  url: string;
+  logo: string;
+  providerScore: number | null;
+  payin: string;
+  transferTime: number;
+  fee: number;
+  receivedAmount: number;
+  rate: number;
+  promoAmount: number | null;
+}
+
+export interface GetRemittanceProviderResponse {
+  options: PayoutMethod[];
+  providers: RemittanceProvider[];
+}
+
 function getUniquePayouts(providerQuotes: ProviderQuote[]): PayoutMethod[] {
   console.log(providerQuotes);
   const payoutMap: Map<string, number> = new Map();
@@ -142,8 +161,10 @@ const client = axios.create({
   baseURL: 'https://migremmit-api.onrender.com/api/v1',
 });
 
-export const getRemittanceProviders = async (reqBody: GetRemittanceProvidersRequest) => {
-  console.log(reqBody);
+export const getRemittanceProviders = async (
+  reqBody: GetRemittanceProvidersRequest
+): Promise<GetRemittanceProviderResponse> => {
+  console.log('🚀 ~ reqBody:', reqBody);
   const res = await client.post('/', {
     lang: 'en',
     maxAge: 0,
@@ -152,5 +173,23 @@ export const getRemittanceProviders = async (reqBody: GetRemittanceProvidersRequ
   const remittanceRes: RemittanceProviderResponse = res.data.data.results;
   return {
     options: getUniquePayouts(remittanceRes.providerQuotes),
+    providers: remittanceRes.providerQuotes.map((providerQuote) => {
+      return {
+        displayName: providerQuote.psp.displayName,
+        type: providerQuote.psp.type,
+        url: providerQuote.psp.url,
+        logo: providerQuote.psp.logo.sm,
+        providerScore: providerQuote.psp.providerScore.value,
+        payin: providerQuote.quotes[0].payin,
+        transferTime: providerQuote.quotes[0].transferTime.max,
+        fee: providerQuote.quotes[0].fee.total,
+        receivedAmount: providerQuote.quotes[0].receivedAmount,
+        rate: providerQuote.quotes[0].rate,
+        promoAmount:
+          providerQuote.quotes[0].promos && providerQuote.quotes[0].promos.length > 0
+            ? providerQuote.quotes[0].promos[0].receivedAmount
+            : null,
+      };
+    }),
   };
 };

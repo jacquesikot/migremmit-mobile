@@ -13,6 +13,7 @@ import OverlayLoader from '../components/OverlayLoader';
 import RemittanceOptionCard from '../components/RemittanceOptionCard';
 import { numberWithCommas } from '../utils';
 import NoResult from '../components/NoResult';
+import ProviderCard from '../components/ProviderCard';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,7 +38,6 @@ const styles = StyleSheet.create({
   },
   optionsHeader: {
     height: 150,
-    marginTop: theme.spacing.xl,
     paddingLeft: theme.spacing.m,
     borderRadius: theme.spacing.s,
   },
@@ -56,9 +56,10 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
     currencyTo: activeToCurrency.code,
     amount: route.params.amount,
   };
+  console.log(activeFromCountry);
   const getRemittanceMutation = useMutation((data: GetRemittanceProvidersRequest) => getRemittanceProviders(data), {
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
     },
     onError: (error) => {
       console.log(error);
@@ -106,26 +107,53 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
 
         <Box style={{ alignItems: 'center' }}>
           {getRemittanceMutation.data && getRemittanceMutation.data.options.length > 0 ? (
-            <Box style={styles.optionsHeader}>
+            <>
+              <Box style={styles.optionsHeader}>
+                <FlatList
+                  data={getRemittanceMutation.data?.options}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(i, index) => index.toString()}
+                  horizontal
+                  renderItem={({ item, index }) => (
+                    <RemittanceOptionCard
+                      handleOnPress={() => setActiveOption(item)}
+                      key={index}
+                      iconType={item.payout}
+                      amount={item.promosAmount ? item.promosAmount.toString() : item.receivedAmount.toString()}
+                      isBestValue={item.isBestValue}
+                      active={activeOption === item}
+                    />
+                  )}
+                />
+              </Box>
+
+              <Box
+                style={{
+                  width: '100%',
+                  paddingHorizontal: theme.spacing.m,
+                  marginVertical: theme.spacing.m,
+                }}
+              >
+                <Text variant="subTitle">Providers</Text>
+              </Box>
+
               <FlatList
-                data={getRemittanceMutation.data?.options}
-                showsHorizontalScrollIndicator={false}
+                data={getRemittanceMutation.data.providers}
                 keyExtractor={(i, index) => index.toString()}
-                horizontal
-                renderItem={({ item, index }) => (
-                  <RemittanceOptionCard
-                    handleOnPress={() => setActiveOption(item)}
-                    key={index}
-                    iconType={item.payout}
-                    amount={item.promosAmount ? item.promosAmount.toString() : item.receivedAmount.toString()}
-                    isBestValue={item.isBestValue}
-                    active={activeOption === item}
+                renderItem={({ item }) => (
+                  <ProviderCard
+                    logoUrl={item.logo}
+                    rating={item.providerScore || 0}
+                    timeToReceive={item.transferTime.toString()}
+                    exchangeRate={item.rate.toString()}
+                    recipientGets={item.receivedAmount.toString()}
+                    fee={item.fee.toString()}
                   />
                 )}
               />
-            </Box>
-          ) : (
-            <NoResult navigation={navigation} />
+            </>
+          ) : getRemittanceMutation.isLoading ? null : (
+            <NoResult navigation={navigation} amount={route.params.amount} />
           )}
         </Box>
       </Box>

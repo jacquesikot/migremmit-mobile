@@ -65,7 +65,7 @@ const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'
         };
       })
     : [];
-  const [amount, setAmount] = React.useState('');
+  const [amount, setAmount] = React.useState('50');
 
   useEffect(() => {
     dispatch(setCountries(countries));
