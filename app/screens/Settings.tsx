@@ -5,6 +5,7 @@ import theme, { Box, Text } from '../theme';
 import AppHeader from "../components/AppHeader";
 import  SetDefaultCountry  from  "../components/SetDefaultCountry"
 import  SetDefaultCurrency  from  "../components/SetDefaultCurrency"
+import SetThemeMode from "../components/SetThemeMode"
 
 const styles = StyleSheet.create({
   container: {
@@ -33,6 +34,7 @@ const Settings = () => {
     <AppHeader title="Settings" showBackButton />
     
     <Box style={styles.pickerBox} alignSelf="center">
+      <SetThemeMode />
       <SetDefaultCountry />
       <SetDefaultCurrency/>
     </Box>

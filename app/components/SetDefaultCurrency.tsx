@@ -8,9 +8,10 @@ import CurrencyPickerModal from './CurrencyPickerModal';
 import { Currency, setFromCurrency, setToCurrency } from '../redux/slice/country';
 // import useCreateMessage from '../language/createMessage';
 
+// const FullWindowOverlay = 100%
+
 const styles = StyleSheet.create({
   container: {
-    width: 100,
     borderWidth: 2,
     borderRadius: theme.spacing.xs,
     borderColor: theme.colors.grey,
@@ -50,14 +51,14 @@ const SetDefaultCurrency = ({ isFrom }: SetDefaultCurrencyProps) => {
   return (
     <Box>
       <Text variant="caption" color="text" mb="xs" style={{ fontFamily: 'InterBold', fontSize: 10 }}>
-      'Set Default Currency'
+      Set Default Currency
       </Text>
       <TouchableOpacity activeOpacity={0.8} onPress={() => setShowCurrencyPicker(true)} style={styles.container}>
         <Text variant="body" style={styles.currencyText}>
           {activeCurrency.code}
         </Text>
         <Feather name="chevron-down" size={16} color="black" />
-      </TouchableOpacity>
+      </TouchableOpacity >
       <CurrencyPickerModal
         activeCurrency={activeCurrency}
         curencies={currencies}
