@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
 
 interface AppHeaderProps {
   title: string;
+  dontShowBackButton?: boolean;
   showBackButton?: boolean;
   navigation?: any; // find correct type here later
 }
@@ -36,10 +37,10 @@ const AppHeader = (props: AppHeaderProps) => {
       {props.showBackButton && (
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Ionicons name="arrow-back-outline" size={18} color="black" />
-        </TouchableOpacity>
-      )}
+        </TouchableOpacity>) || props.dontShowBackButton
+      }
       <Box marginLeft="m">
-        {props.showBackButton ? (
+        {props.showBackButton || props.dontShowBackButton ? (
           <Text variant="subTitle">{props.title}</Text>
         ) : (
           <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
