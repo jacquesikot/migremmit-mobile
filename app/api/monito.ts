@@ -180,7 +180,7 @@ export const getRemittanceProviders = async (
         url: providerQuote.psp.url,
         logo: providerQuote.psp.logo.sm,
         providerScore: providerQuote.psp.providerScore.value,
-        payin: providerQuote.quotes[0].payin,
+        payin: providerQuote.quotes[0].payout,
         transferTime: providerQuote.quotes[0].transferTime.max,
         fee: providerQuote.quotes[0].fee.total,
         receivedAmount: providerQuote.quotes[0].receivedAmount,

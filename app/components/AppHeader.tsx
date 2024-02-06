@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.white,
     borderTopWidth: 2,
     borderColor: theme.colors.primary,
-    marginTop:  20, // Hack to fix the top bar on iOS
   },
   logo: {
     width: 154,

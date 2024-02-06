@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
@@ -8,12 +8,13 @@ import theme, { Box, Text } from '../theme';
 import { HomeNavStackProps } from '../navigation/HomeNav';
 import { useAppSelector } from '../redux/hooks';
 import { useMutation } from 'react-query';
-import { GetRemittanceProvidersRequest, PayoutMethod, getRemittanceProviders } from '../api/monito';
+import { GetRemittanceProvidersRequest, PayoutMethod, RemittanceProvider, getRemittanceProviders } from '../api/monito';
 import OverlayLoader from '../components/OverlayLoader';
 import RemittanceOptionCard from '../components/RemittanceOptionCard';
 import { numberWithCommas } from '../utils';
 import NoResult from '../components/NoResult';
 import ProviderCard from '../components/ProviderCard';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const styles = StyleSheet.create({
   container: {
@@ -44,7 +45,8 @@ const styles = StyleSheet.create({
 });
 
 const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps, 'Details'>) => {
-  const [activeOption, setActiveOption] = React.useState<PayoutMethod | undefined>();
+  const [activeOption, setActiveOption] = useState<PayoutMethod | undefined>();
+  const [filteredProviders, setFilteredProviders] = useState<RemittanceProvider[]>([]);
   const activeFromCountry = useAppSelector((state) => state.country.activeFromCountry);
   const activeToCountry = useAppSelector((state) => state.country.activeToCountry);
   const activeFromCurrency = useAppSelector((state) => state.country.activeFromCurrency);
@@ -59,7 +61,8 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
   // console.log(activeFromCountry);
   const getRemittanceMutation = useMutation((data: GetRemittanceProvidersRequest) => getRemittanceProviders(data), {
     onSuccess: (data) => {
-      // console.log(data);
+      console.log(data.providers.map((p) => p.payin));
+      console.log(activeOption?.payout);
     },
     onError: (error) => {
       console.log(error);
@@ -74,6 +77,13 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
   useEffect(() => {
     setActiveOption(getRemittanceMutation.data?.options[0]);
   }, [getRemittanceMutation.data]);
+
+  useEffect(() => {
+    if (getRemittanceMutation.data && getRemittanceMutation.data?.providers.length > 0) {
+      const filteredProviders = getRemittanceMutation.data.providers.filter((p) => p.payin === activeOption?.payout);
+      setFilteredProviders(filteredProviders);
+    }
+  }, [activeOption, getRemittanceMutation.data]);
   return (
     <>
       <OverlayLoader visible={getRemittanceMutation.isLoading} />
@@ -131,26 +141,29 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
                 style={{
                   width: '100%',
                   paddingHorizontal: theme.spacing.m,
-                  marginVertical: theme.spacing.m,
+                  marginVertical: theme.spacing.s,
                 }}
               >
                 <Text variant="subTitle">Providers</Text>
               </Box>
 
-              <FlatList
-                data={getRemittanceMutation.data.providers}
-                keyExtractor={(i, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <ProviderCard
-                    logoUrl={item.logo}
-                    rating={item.providerScore || 0}
-                    timeToReceive={item.transferTime.toString()}
-                    exchangeRate={item.rate.toString()}
-                    recipientGets={item.receivedAmount.toString()}
-                    fee={item.fee.toString()}
-                  />
-                )}
-              />
+              <Box style={{ height: hp(50), paddingBottom: 40 }}>
+                <FlatList
+                  data={filteredProviders}
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={(i, index) => index.toString()}
+                  renderItem={({ item }) => (
+                    <ProviderCard
+                      logoUrl={item.logo}
+                      rating={item.providerScore || 0}
+                      timeToReceive={item.transferTime.toString()}
+                      exchangeRate={item.rate.toString()}
+                      recipientGets={item.receivedAmount.toString()}
+                      fee={item.fee.toString()}
+                    />
+                  )}
+                />
+              </Box>
             </>
           ) : getRemittanceMutation.isLoading ? null : (
             <NoResult navigation={navigation} amount={route.params.amount} />
