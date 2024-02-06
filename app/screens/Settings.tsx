@@ -5,6 +5,7 @@ import theme, { Box, Text } from '../theme';
 import AppHeader from "../components/AppHeader";
 import  SetDefaultCountry  from  "../components/SetDefaultCountry"
 import  SetDefaultCurrency  from  "../components/SetDefaultCurrency"
+import SetThemeMode from "../components/SetThemeMode"
 
 const styles = StyleSheet.create({
   container: {
@@ -30,11 +31,12 @@ const Settings = () => {
   return <>
     {/* <OverlayLoader visible/> */}
     <Box style={styles.container}>
-    <AppHeader title="Settings" showBackButton />
+    <AppHeader title="Settings" dontShowBackButton/>
     
     <Box style={styles.pickerBox} alignSelf="center">
+      <SetThemeMode />
       <SetDefaultCountry />
-      {/* <SetDefaultCurrrency /> */}
+      <SetDefaultCurrency/>
     </Box>
   
     </Box>
