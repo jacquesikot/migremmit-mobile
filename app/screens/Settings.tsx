@@ -31,7 +31,7 @@ const Settings = () => {
   return <>
     {/* <OverlayLoader visible/> */}
     <Box style={styles.container}>
-    <AppHeader title="Settings" showBackButton />
+    <AppHeader title="Settings" dontShowBackButton/>
     
     <Box style={styles.pickerBox} alignSelf="center">
       <SetThemeMode />
