@@ -34,7 +34,7 @@ const Settings = () => {
     
     <Box style={styles.pickerBox} alignSelf="center">
       <SetDefaultCountry />
-      {/* <SetDefaultCurrrency /> */}
+      <SetDefaultCurrency/>
     </Box>
   
     </Box>
