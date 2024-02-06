@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, } from 'react-native';
 import { useQuery } from 'react-query';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -78,7 +78,7 @@ const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'
       <>
         <OverlayLoader visible={getCountriesQuery.isLoading} />
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-          <AppHeader title="Home" />
+          <AppHeader title="Home"/>
           <LinearGradient colors={[theme.colors.primary, theme.colors.white]} style={styles.gradient}>
             <Text variant="subTitle" color="white" style={styles.headerText}>
               {createMessage('COMPARE_INTERNATIONAL_MONEY_TRANSFERS_AND_SAVE')}
@@ -93,7 +93,7 @@ const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'
                 <CurrencyPicker />
               </Box>
               <Button
-                label="Compare"
+                label={createMessage('COMPARE')}
                 variant="secondary"
                 onPress={() => navigation.navigate('Details', { amount: parseInt(amount, 10) })}
                 containerStyle={{ marginTop: 20 }}

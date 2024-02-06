@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { Currency, setFromCurrency, setToCurrency } from '../redux/slice/country';
 import theme, { Box, Text } from '../theme';
 import CurrencyPickerModal from './CurrencyPickerModal';
+import useCreateMessage from '../language/createMessage';
 
 const styles = StyleSheet.create({
   container: {
@@ -54,7 +55,7 @@ const CurrencyInput = (props: CurrencyInputProps) => {
   const currencies = props.isFrom ? fromCurrencies : toCurrencies;
   const activeCurrency = props.isFrom ? activeFromCurrency : activeToCurrency;
   const [showCurrencyPicker, setShowCurrencyPicker] = React.useState(false);
-
+  
   const handleSetCurrency = (currency: Currency) => {
     if (props.isFrom) {
       dispatch(setFromCurrency(currency));
@@ -62,10 +63,11 @@ const CurrencyInput = (props: CurrencyInputProps) => {
       dispatch(setToCurrency(currency));
     }
   };
+  const { createMessage } = useCreateMessage();
   return (
     <Box>
       <Text variant="caption" color="text" mb="xs" style={{ fontFamily: 'InterBold', fontSize: 10 }}>
-        YOU SEND
+        {createMessage('YOU_SEND')}
       </Text>
       <Box style={styles.container}>
         <TextInput style={styles.input} placeholder="E.g. 550" {...props} />

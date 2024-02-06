@@ -29,10 +29,10 @@ const styles = StyleSheet.create({
   },
 });
 
-interface CountryPickerProps {
+interface SetDefaultCountry {
   isFrom?: boolean;
 }
-const CountryPicker = (props: CountryPickerProps) => {
+const CountryPicker = (props: SetDefaultCountry) => {
   const [modalVisible, setModalVisible] = React.useState(false);
   const { createMessage } = useCreateMessage();
   
@@ -47,12 +47,12 @@ const CountryPicker = (props: CountryPickerProps) => {
       dispatch(setActiveToCountry(country));
     }
   };
-  const countryLabel = props.isFrom ? createMessage('COUNTRY_FROM') : createMessage('COUNTRY_TO')
+ 
   return (
     <>
       <Box style={styles.container}>
         <Text variant="caption" color="text" style={{ fontFamily: 'InterBold', fontSize: 10 }}>
-          {countryLabel}
+         Set Default Country
         </Text>
         <Box style={styles.selectContainer}>
           <TouchableOpacity  onPress={() => setModalVisible(!modalVisible)}>
