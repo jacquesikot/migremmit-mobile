@@ -3,19 +3,15 @@ import React from 'react';
 import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useAppSelector } from '../redux/hooks';
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
 import LanguageChangeModal from './LanguageChangeModal';
+import useTheme from '../hooks/useTheme';
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     height: 70,
-    paddingHorizontal: theme.spacing.m,
-    paddingVertical: theme.spacing.s,
-    backgroundColor: theme.colors.white,
-    borderTopWidth: 2,
-    borderColor: theme.colors.primary,
   },
   logo: {
     width: 154,
@@ -32,13 +28,26 @@ interface AppHeaderProps {
 const AppHeader = (props: AppHeaderProps) => {
   const currentLanguage = useAppSelector((state) => state.country.language);
   const [showLanguageModal, setShowLanguageModal] = React.useState(false);
+  const theme = useTheme();
   return (
-    <Box style={styles.container}>
-      {props.showBackButton && (
+    <Box
+      style={[
+        styles.container,
+        {
+          paddingHorizontal: theme.spacing.m,
+          paddingVertical: theme.spacing.s,
+          backgroundColor: theme.colors.white,
+          borderTopWidth: 2,
+          borderColor: theme.colors.primary,
+        },
+      ]}
+    >
+      {(props.showBackButton && (
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Ionicons name="arrow-back-outline" size={18} color="black" />
-        </TouchableOpacity>) || props.dontShowBackButton
-      }
+        </TouchableOpacity>
+      )) ||
+        props.dontShowBackButton}
       <Box marginLeft="m">
         {props.showBackButton || props.dontShowBackButton ? (
           <Text variant="subTitle">{props.title}</Text>

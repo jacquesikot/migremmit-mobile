@@ -1,32 +1,35 @@
 import React from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import Svg, { Circle } from 'react-native-svg';
 
-import theme, { Box, Text } from '../theme';
-import Button from './Button';
 import { useAppSelector } from '../redux/hooks';
-import { numberWithCommas } from '../utils';
+import { Box, Text } from '../theme';
+import Button from './Button';
+import useTheme from '../hooks/useTheme';
+import useCreateMessage from '../language/createMessage';
 
-const styles = StyleSheet.create({
-  container: {
-    width: wp(90),
-    backgroundColor: theme.colors.white,
-    borderRadius: theme.spacing.s,
-    padding: theme.spacing.s,
-    marginTop: theme.spacing.l,
-    alignItems: 'center',
-  },
-  logoContainer: {
-    width: '98%',
-    backgroundColor: theme.colors.lightGrey,
-    borderRadius: theme.spacing.s,
-    height: 70,
-    justifyContent: 'center',
-    padding: theme.spacing.s,
-  },
-  bestDealContainer: {},
-});
+const styledTheme = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      width: wp(90),
+      backgroundColor: theme.colors.white,
+      borderRadius: theme.spacing.s,
+      padding: theme.spacing.s,
+      marginTop: theme.spacing.l,
+      alignItems: 'center',
+    },
+    logoContainer: {
+      width: '98%',
+      backgroundColor: theme.colors.lightGrey,
+      borderRadius: theme.spacing.s,
+      height: 70,
+      justifyContent: 'center',
+      padding: theme.spacing.s,
+    },
+    bestDealContainer: {},
+  });
+};
 
 interface ProviderCardProps {
   logoUrl: string;
@@ -35,16 +38,18 @@ interface ProviderCardProps {
   fee: string;
   exchangeRate: string;
   recipientGets: string;
+  onPress: () => void;
 }
 
 interface CircleProgressBarProps {
   progress: number;
+  theme: any;
 }
 
 const PROGRESS_BAR_RADIUS = 30;
 const PROGRESS_BAR_STROKE_WIDTH = 5;
 
-const CircularProgressBar = ({ progress }: CircleProgressBarProps) => {
+const CircularProgressBar = ({ progress, theme }: CircleProgressBarProps) => {
   const circumference = 2 * Math.PI * PROGRESS_BAR_RADIUS;
   const progressValue = (progress / 100) * circumference;
 
@@ -74,14 +79,20 @@ const CircularProgressBar = ({ progress }: CircleProgressBarProps) => {
 };
 
 const ProviderCard = (props: ProviderCardProps) => {
+  const theme = useTheme();
+  const styles = styledTheme(theme);
+  const { createMessage } = useCreateMessage();
   const activeToCurrency = useAppSelector((state) => state.country.activeToCurrency);
   const activeFromCurrency = useAppSelector((state) => state.country.activeFromCurrency);
-  const timeTakenText = parseInt(props.timeToReceive) > 0 ? `${props.timeToReceive} days to receive` : 'In minutes';
+  const timeTakenText =
+    parseInt(props.timeToReceive) > 0
+      ? `${props.timeToReceive} ${createMessage('DAYS_TO_RECEIVE')}`
+      : createMessage('IN_MINUTES');
   return (
     <Box style={styles.container}>
       <Box style={styles.logoContainer}>
         <Box position="absolute" right={0} top={-45}>
-          <CircularProgressBar progress={props.rating * 10} />
+          <CircularProgressBar progress={props.rating * 10} theme={theme} />
         </Box>
         <Image source={{ uri: props.logoUrl }} style={{ width: 180, height: 50 }} />
       </Box>
@@ -92,7 +103,7 @@ const ProviderCard = (props: ProviderCardProps) => {
             {timeTakenText}
           </Text>
           <Text color="textSecondary" fontSize={14} fontWeight="400" variant="subTitle" style={{ textAlign: 'center' }}>
-            Reciepient gets
+            {createMessage('RECEIPIENT_GETS')}
           </Text>
         </Box>
 
@@ -100,7 +111,7 @@ const ProviderCard = (props: ProviderCardProps) => {
           <Box>
             <Box flexDirection="row" alignItems="center">
               <Text color="textSecondary" fontSize={12} fontWeight="400" variant="subTitle">
-                Fee
+                {createMessage('FEE')}
               </Text>
               <Text fontSize={12} fontWeight="400" variant="subTitle" ml="xs">
                 {props.fee} {activeFromCurrency.code}
@@ -108,7 +119,7 @@ const ProviderCard = (props: ProviderCardProps) => {
             </Box>
             <Box flexDirection="row" alignItems="center">
               <Text color="textSecondary" fontSize={12} fontWeight="400" variant="subTitle">
-                Exchange Rate
+                {createMessage('EXCHANGE_RATE')}
               </Text>
               <Text fontSize={12} fontWeight="400" variant="subTitle" ml="xs">
                 {parseInt(props.exchangeRate).toFixed(3)}
@@ -124,7 +135,7 @@ const ProviderCard = (props: ProviderCardProps) => {
       </Box>
 
       <Box width={'100%'} mt="m">
-        <Button variant="secondary" label="Go" onPress={() => true} />
+        <Button variant="secondary" label={createMessage('GO')} onPress={props.onPress} />
       </Box>
     </Box>
   );

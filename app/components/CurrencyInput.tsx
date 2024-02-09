@@ -4,49 +4,54 @@ import { StyleSheet, TextInput, TextInputProps, TouchableOpacity } from 'react-n
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { Currency, setFromCurrency, setToCurrency } from '../redux/slice/country';
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
 import CurrencyPickerModal from './CurrencyPickerModal';
 import useCreateMessage from '../language/createMessage';
+import useTheme from '../hooks/useTheme';
 
-const styles = StyleSheet.create({
-  container: {
-    borderWidth: 2,
-    borderRadius: theme.spacing.xs,
-    borderColor: theme.colors.primary,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    width: 200,
-    paddingHorizontal: theme.spacing.s,
-    height: 55,
-  },
-  line: {
-    width: 2,
-    backgroundColor: theme.colors.lightGrey,
-  },
-  input: {
-    width: '60%',
-    height: 50,
-    fontFamily: 'InterRegular',
-    fontSize: 18,
-    color: theme.colors.text,
-  },
-  currencyPicker: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: theme.spacing.s,
-  },
-  currencyText: {
-    fontFamily: 'InterBold',
-    fontSize: 16,
-    marginRight: theme.spacing.xs,
-  },
-});
+const styledTheme = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      borderWidth: 2,
+      borderRadius: theme.spacing.xs,
+      borderColor: theme.colors.primary,
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      width: 200,
+      paddingHorizontal: theme.spacing.s,
+      height: 55,
+    },
+    line: {
+      width: 2,
+      backgroundColor: theme.colors.lightGrey,
+    },
+    input: {
+      width: '60%',
+      height: 50,
+      fontFamily: 'InterRegular',
+      fontSize: 18,
+      color: theme.colors.text,
+    },
+    currencyPicker: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingLeft: theme.spacing.s,
+    },
+    currencyText: {
+      fontFamily: 'InterBold',
+      fontSize: 16,
+      marginRight: theme.spacing.xs,
+    },
+  });
+};
 
 interface CurrencyInputProps extends TextInputProps {
   isFrom?: boolean;
 }
 const CurrencyInput = (props: CurrencyInputProps) => {
+  const theme = useTheme();
+  const styles = styledTheme(theme);
   const dispatch = useAppDispatch();
   const toCurrencies = useAppSelector((state) => state.country.toCurrencies);
   const fromCurrencies = useAppSelector((state) => state.country.fromCurrencies);
@@ -55,7 +60,7 @@ const CurrencyInput = (props: CurrencyInputProps) => {
   const currencies = props.isFrom ? fromCurrencies : toCurrencies;
   const activeCurrency = props.isFrom ? activeFromCurrency : activeToCurrency;
   const [showCurrencyPicker, setShowCurrencyPicker] = React.useState(false);
-  
+
   const handleSetCurrency = (currency: Currency) => {
     if (props.isFrom) {
       dispatch(setFromCurrency(currency));

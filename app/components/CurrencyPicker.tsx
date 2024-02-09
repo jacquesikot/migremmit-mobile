@@ -2,34 +2,39 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import CurrencyPickerModal from './CurrencyPickerModal';
 import { Currency, setFromCurrency, setToCurrency } from '../redux/slice/country';
 import useCreateMessage from '../language/createMessage';
+import useTheme from '../hooks/useTheme';
 
-const styles = StyleSheet.create({
-  container: {
-    width: 100,
-    borderWidth: 2,
-    borderRadius: theme.spacing.xs,
-    borderColor: theme.colors.grey,
-    height: 55,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  currencyText: {
-    fontFamily: 'InterBold',
-    fontSize: 16,
-    marginRight: theme.spacing.xs,
-  },
-});
+const styledTheme = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      width: 100,
+      borderWidth: 2,
+      borderRadius: theme.spacing.xs,
+      borderColor: theme.colors.grey,
+      height: 55,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+    },
+    currencyText: {
+      fontFamily: 'InterBold',
+      fontSize: 16,
+      marginRight: theme.spacing.xs,
+    },
+  });
+};
 
 interface CurrencyPickerProps {
   isFrom?: boolean;
 }
 const CurrencyPicker = ({ isFrom }: CurrencyPickerProps) => {
+  const theme = useTheme();
+  const styles = styledTheme(theme);
   const dispatch = useAppDispatch();
   const toCurrencies = useAppSelector((state) => state.country.toCurrencies);
   const fromCurrencies = useAppSelector((state) => state.country.fromCurrencies);
@@ -46,11 +51,11 @@ const CurrencyPicker = ({ isFrom }: CurrencyPickerProps) => {
     }
   };
   const { createMessage } = useCreateMessage();
-  
+
   return (
     <Box>
       <Text variant="caption" color="text" mb="xs" style={{ fontFamily: 'InterBold', fontSize: 10 }}>
-      {createMessage('TO')}
+        {createMessage('TO')}
       </Text>
       <TouchableOpacity activeOpacity={0.8} onPress={() => setShowCurrencyPicker(true)} style={styles.container}>
         <Text variant="body" style={styles.currencyText}>

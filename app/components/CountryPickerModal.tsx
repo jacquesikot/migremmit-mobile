@@ -2,57 +2,60 @@ import React, { useEffect } from 'react';
 import { FlatList, Image, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
 import SearchInput from './SearchInput';
 import { Country } from '../redux/slice/country';
 import { useAppSelector } from '../redux/hooks';
+import useTheme from '../hooks/useTheme';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: theme.spacing.xl,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 35,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: theme.colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
+const styles = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: theme.spacing.xl,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: '90%',
-    height: '80%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: theme.spacing.m,
-  },
-  selectContainer: {
-    flexDirection: 'row',
-    borderBottomWidth: 2,
-    paddingVertical: theme.spacing.m,
-    borderBottomColor: theme.colors.lightGrey,
-    alignItems: 'center',
-  },
-});
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 12,
+      padding: 35,
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: theme.colors.black,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      width: '90%',
+      height: '80%',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      marginBottom: theme.spacing.m,
+    },
+    selectContainer: {
+      flexDirection: 'row',
+      borderBottomWidth: 2,
+      paddingVertical: theme.spacing.m,
+      borderBottomColor: theme.colors.lightGrey,
+      alignItems: 'center',
+    },
+  });
+};
 
 interface CountryPickerModalProps {
   visible: boolean;
@@ -60,6 +63,7 @@ interface CountryPickerModalProps {
   setCountry: (country: Country) => void;
 }
 const CountryPickerModal = (props: CountryPickerModalProps) => {
+  const theme = useTheme();
   const countries = useAppSelector((state) => state.country.countries);
   const [searchText, setSearchText] = React.useState('');
   const [filteredCountries, setFilteredCountries] = React.useState<Country[]>(countries);
@@ -84,7 +88,7 @@ const CountryPickerModal = (props: CountryPickerModalProps) => {
         props.setVisible(false);
       }}
     >
-      <Box style={styles.selectContainer}>
+      <Box style={styles(theme).selectContainer}>
         <Image source={{ uri: item.flagUrl }} style={{ width: 20, height: 15, borderRadius: 3 }} />
         <Text variant="body" ml="s" numberOfLines={1}>
           {item.name}
@@ -98,7 +102,7 @@ const CountryPickerModal = (props: CountryPickerModalProps) => {
   }
 
   return (
-    <Box style={styles.container}>
+    <Box style={styles(theme).container}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -107,9 +111,9 @@ const CountryPickerModal = (props: CountryPickerModalProps) => {
           props.setVisible(!props.visible);
         }}
       >
-        <Box style={styles.centeredView}>
-          <Box style={styles.modalView}>
-            <Box style={styles.header}>
+        <Box style={styles(theme).centeredView}>
+          <Box style={styles(theme).modalView}>
+            <Box style={styles(theme).header}>
               <Text variant="subTitle" color="text">
                 Select a country
               </Text>

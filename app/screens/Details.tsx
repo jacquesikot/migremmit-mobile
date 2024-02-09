@@ -1,52 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, Image, StyleSheet } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, Linking, StyleSheet } from 'react-native';
 
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useMutation } from 'react-query';
+import { GetRemittanceProvidersRequest, PayoutMethod, getRemittanceProviders } from '../api/monito';
 import AppHeader from '../components/AppHeader';
-import theme, { Box, Text } from '../theme';
+import NoResult from '../components/NoResult';
+import OverlayLoader from '../components/OverlayLoader';
+import ProviderCard from '../components/ProviderCard';
+import useTheme from '../hooks/useTheme';
 import { HomeNavStackProps } from '../navigation/HomeNav';
 import { useAppSelector } from '../redux/hooks';
-import { useMutation } from 'react-query';
-import { GetRemittanceProvidersRequest, PayoutMethod, RemittanceProvider, getRemittanceProviders } from '../api/monito';
-import OverlayLoader from '../components/OverlayLoader';
-import RemittanceOptionCard from '../components/RemittanceOptionCard';
+import { Box, Text } from '../theme';
 import { numberWithCommas } from '../utils';
-import NoResult from '../components/NoResult';
-import ProviderCard from '../components/ProviderCard';
-import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import useCreateMessage from '../language/createMessage';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.lightGrey,
-  },
-  header: {
-    paddingHorizontal: theme.spacing.m,
-    height: 60,
-    borderBottomWidth: 2,
-    borderColor: theme.colors.primary,
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: theme.spacing.xl,
-  },
-  headerCurrencyStyle: {
-    fontFamily: 'InterMedium',
-    fontSize: 16,
-    color: theme.colors.text,
-    marginLeft: theme.spacing.s,
-  },
-  optionsHeader: {
-    height: 150,
-    paddingLeft: theme.spacing.m,
-    borderRadius: theme.spacing.s,
-  },
-});
+const styles = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.lightGrey,
+    },
+    header: {
+      paddingHorizontal: theme.spacing.m,
+      height: 60,
+      borderBottomWidth: 2,
+      borderColor: theme.colors.primary,
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: theme.spacing.xl,
+    },
+    headerCurrencyStyle: {
+      fontFamily: 'InterMedium',
+      fontSize: 16,
+      color: theme.colors.text,
+      marginLeft: theme.spacing.s,
+    },
+    optionsHeader: {
+      height: 150,
+      paddingLeft: theme.spacing.m,
+      borderRadius: theme.spacing.s,
+    },
+  });
+};
 
 const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps, 'Details'>) => {
+  const theme = useTheme();
+  const { createMessage } = useCreateMessage();
   const [activeOption, setActiveOption] = useState<PayoutMethod | undefined>();
-  const [filteredProviders, setFilteredProviders] = useState<RemittanceProvider[]>([]);
   const activeFromCountry = useAppSelector((state) => state.country.activeFromCountry);
   const activeToCountry = useAppSelector((state) => state.country.activeToCountry);
   const activeFromCurrency = useAppSelector((state) => state.country.activeFromCurrency);
@@ -78,24 +82,21 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
     setActiveOption(getRemittanceMutation.data?.options[0]);
   }, [getRemittanceMutation.data]);
 
-  useEffect(() => {
-    if (getRemittanceMutation.data && getRemittanceMutation.data?.providers.length > 0) {
-      const filteredProviders = getRemittanceMutation.data.providers.filter((p) => p.payin === activeOption?.payout);
-      setFilteredProviders(filteredProviders);
-    }
-  }, [activeOption, getRemittanceMutation.data]);
+  const handleProviderClick = async (url: string) => {
+    await Linking.openURL(url);
+  };
   return (
     <>
       <OverlayLoader visible={getRemittanceMutation.isLoading} />
-      <Box style={styles.container}>
-        <AppHeader title="Search Results" showBackButton navigation={navigation} />
+      <Box style={styles(theme).container}>
+        <AppHeader title={createMessage('SEARCH_RESULT')} showBackButton navigation={navigation} />
 
-        <Box style={styles.header}>
+        <Box style={styles(theme).header}>
           <Image
             source={{ uri: activeFromCountry.flagUrl }}
             style={{ width: 25, height: 15, borderRadius: theme.spacing.xs }}
           />
-          <Text variant="subTitle" style={styles.headerCurrencyStyle}>
+          <Text variant="subTitle" style={styles(theme).headerCurrencyStyle}>
             {numberWithCommas(route.params.amount.toString()) + ' ' + activeFromCurrency.code}
           </Text>
 
@@ -110,7 +111,7 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
             source={{ uri: activeToCountry.flagUrl }}
             style={{ width: 25, height: 15, borderRadius: theme.spacing.xs }}
           />
-          <Text variant="subTitle" style={styles.headerCurrencyStyle}>
+          <Text variant="subTitle" style={styles(theme).headerCurrencyStyle}>
             {activeToCurrency.code}
           </Text>
         </Box>
@@ -118,38 +119,9 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
         <Box style={{ alignItems: 'center' }}>
           {getRemittanceMutation.data && getRemittanceMutation.data.options.length > 0 ? (
             <>
-              <Box style={styles.optionsHeader}>
+              <Box style={{ height: hp(70) }}>
                 <FlatList
-                  data={getRemittanceMutation.data?.options}
-                  showsHorizontalScrollIndicator={false}
-                  keyExtractor={(i, index) => index.toString()}
-                  horizontal
-                  renderItem={({ item, index }) => (
-                    <RemittanceOptionCard
-                      handleOnPress={() => setActiveOption(item)}
-                      key={index}
-                      iconType={item.payout}
-                      amount={item.promosAmount ? item.promosAmount.toString() : item.receivedAmount.toString()}
-                      isBestValue={item.isBestValue}
-                      active={activeOption === item}
-                    />
-                  )}
-                />
-              </Box>
-
-              <Box
-                style={{
-                  width: '100%',
-                  paddingHorizontal: theme.spacing.m,
-                  marginVertical: theme.spacing.s,
-                }}
-              >
-                <Text variant="subTitle">Providers</Text>
-              </Box>
-
-              <Box style={{ height: hp(50), paddingBottom: 40 }}>
-                <FlatList
-                  data={filteredProviders}
+                  data={getRemittanceMutation.data.providers}
                   showsVerticalScrollIndicator={false}
                   keyExtractor={(i, index) => index.toString()}
                   renderItem={({ item }) => (
@@ -160,6 +132,7 @@ const Details = ({ route, navigation }: NativeStackScreenProps<HomeNavStackProps
                       exchangeRate={item.rate.toString()}
                       recipientGets={item.receivedAmount.toString()}
                       fee={item.fee.toString()}
+                      onPress={() => handleProviderClick(item.url)}
                     />
                   )}
                 />

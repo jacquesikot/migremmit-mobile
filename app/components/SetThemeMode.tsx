@@ -2,33 +2,41 @@ import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
+import useTheme from '../hooks/useTheme';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { toggleTheme } from '../redux/slice/country';
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.white,
-  },
-  selectContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: 'white',
-    marginTop: theme.spacing.xs,
-  },
-  selectContainerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-});
+const styledTheme = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.white,
+    },
+    selectContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+      padding: 10,
+      borderRadius: 8,
+      backgroundColor: 'white',
+      marginTop: theme.spacing.xs,
+    },
+    selectContainerItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+  });
+};
 
 const SetThemeMode = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const theme = useTheme();
+  const styles = styledTheme(theme);
+  const dispatch = useAppDispatch();
+  const currentTheme = useAppSelector((state) => state.country.mode);
 
   const toggleThemeMode = () => {
-    setIsDarkMode((prevMode) => !prevMode);
+    dispatch(toggleTheme());
   };
 
   return (
@@ -41,12 +49,12 @@ const SetThemeMode = () => {
           <TouchableOpacity onPress={toggleThemeMode}>
             <Box style={styles.selectContainerItem}>
               <Text variant="body" ml="s" style={{ fontFamily: 'InterSemibold', width: '80%' }} numberOfLines={1}>
-                {isDarkMode ? 'Dark Mode' : 'Light Mode'}
+                {currentTheme === 'DARK' ? 'Dark Mode' : 'Light Mode'}
               </Text>
             </Box>
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleThemeMode}>
-            <Feather name={isDarkMode ? 'moon' : 'sun'} size={24} color="black" />
+            <Feather name={currentTheme === 'DARK' ? 'moon' : 'sun'} size={24} color="black" />
           </TouchableOpacity>
         </Box>
       </Box>

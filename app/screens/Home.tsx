@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -14,41 +14,45 @@ import OverlayLoader from '../components/OverlayLoader';
 import { HomeNavStackProps } from '../navigation/HomeNav';
 import { useAppDispatch } from '../redux/hooks';
 import { Country, setCountries } from '../redux/slice/country';
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
 import useCreateMessage from '../language/createMessage';
+import useTheme from '../hooks/useTheme';
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.white,
-    flex: 1,
-  },
-  gradient: {
-    flex: 1,
-    alignItems: 'center',
-    paddingTop: theme.spacing.xl,
-  },
-  headerText: {
-    width: '70%',
-    textAlign: 'center',
-  },
-  pickerBox: {
-    backgroundColor: theme.colors.white,
-    width: '90%',
-    borderRadius: 12,
-    marginTop: theme.spacing.xl,
-    padding: theme.spacing.m,
-    borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
-  },
-  line: {
-    width: '100%',
-    height: 2,
-    backgroundColor: theme.colors.lightGrey,
-    marginVertical: theme.spacing.m,
-  },
-});
+const styledTheme = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.white,
+      flex: 1,
+    },
+    gradient: {
+      flex: 1,
+      alignItems: 'center',
+      paddingTop: theme.spacing.xl,
+    },
+    headerText: {
+      width: '70%',
+      textAlign: 'center',
+    },
+    pickerBox: {
+      backgroundColor: theme.colors.white,
+      width: '90%',
+      borderRadius: 12,
+      marginTop: theme.spacing.xl,
+      padding: theme.spacing.m,
+      borderWidth: 1,
+      borderColor: theme.colors.lightGrey,
+    },
+    line: {
+      width: '100%',
+      height: 2,
+      backgroundColor: theme.colors.lightGrey,
+      marginVertical: theme.spacing.m,
+    },
+  });
 
 const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'>) => {
+  const theme = useTheme();
+  const styles = styledTheme(theme);
   const dispatch = useAppDispatch();
   const getCountriesQuery = useQuery({
     queryKey: 'countries',
@@ -78,7 +82,7 @@ const Home = ({ navigation }: NativeStackScreenProps<HomeNavStackProps, 'Search'
       <>
         <OverlayLoader visible={getCountriesQuery.isLoading} />
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-          <AppHeader title="Home"/>
+          <AppHeader title="Home" />
           <LinearGradient colors={[theme.colors.primary, theme.colors.white]} style={styles.gradient}>
             <Text variant="subTitle" color="white" style={styles.headerText}>
               {createMessage('COMPARE_INTERNATIONAL_MONEY_TRANSFERS_AND_SAVE')}

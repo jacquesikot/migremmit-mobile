@@ -2,46 +2,49 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import theme, { Box, Text } from '../theme';
+import { Text } from '../theme';
 import { PayoutType } from '../api/monito';
 import { useAppSelector } from '../redux/hooks';
 import { numberWithCommas } from '../utils';
+import useTheme from '../hooks/useTheme';
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.white,
-    height: 140,
-    padding: 10,
-    width: 150,
-    marginRight: 10,
-    borderRadius: theme.spacing.s,
-    alignItems: 'center',
-  },
-  transferText: {
-    fontSize: 11,
-    fontFamily: 'InterLight',
-    fontWeight: '300',
-    color: theme.colors.text,
-  },
-  titleText: {
-    fontSize: 16,
-    fontFamily: 'InterMedium',
-    color: theme.colors.text,
-  },
-  amountText: {
-    fontSize: 16,
-    fontFamily: 'InterLight',
-    fontWeight: '300',
-    color: theme.colors.text,
-    marginVertical: theme.spacing.xs,
-  },
-  bestValueText: {
-    fontSize: 11,
-    fontFamily: 'InterBold',
-    fontWeight: '300',
-    color: theme.colors.primary,
-  },
-});
+const styledTheme = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.white,
+      height: 140,
+      padding: 10,
+      width: 150,
+      marginRight: 10,
+      borderRadius: theme.spacing.s,
+      alignItems: 'center',
+    },
+    transferText: {
+      fontSize: 11,
+      fontFamily: 'InterLight',
+      fontWeight: '300',
+      color: theme.colors.text,
+    },
+    titleText: {
+      fontSize: 16,
+      fontFamily: 'InterMedium',
+      color: theme.colors.text,
+    },
+    amountText: {
+      fontSize: 16,
+      fontFamily: 'InterLight',
+      fontWeight: '300',
+      color: theme.colors.text,
+      marginVertical: theme.spacing.xs,
+    },
+    bestValueText: {
+      fontSize: 11,
+      fontFamily: 'InterBold',
+      fontWeight: '300',
+      color: theme.colors.primary,
+    },
+  });
+};
 
 interface RemittanceOptionCardProps {
   iconType: PayoutType;
@@ -51,6 +54,8 @@ interface RemittanceOptionCardProps {
   handleOnPress: () => void;
 }
 const RemittanceOptionCard = (props: RemittanceOptionCardProps) => {
+  const theme = useTheme();
+  const styles = styledTheme(theme);
   const activeToCurrency = useAppSelector((state) => state.country.activeToCurrency);
   const returnIconFromPayoutType = () => {
     switch (props.iconType) {

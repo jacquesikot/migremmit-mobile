@@ -1,47 +1,51 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import OverlayLoader from "../components/OverlayLoader";
-import theme, { Box, Text } from '../theme';
-import AppHeader from "../components/AppHeader";
-import  SetDefaultCountry  from  "../components/SetDefaultCountry"
-import  SetDefaultCurrency  from  "../components/SetDefaultCurrency"
-import SetThemeMode from "../components/SetThemeMode"
+import React from 'react';
+import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.lightGrey,
-  },
+import AppHeader from '../components/AppHeader';
+import SetDefaultCountry from '../components/SetDefaultCountry';
+import SetDefaultCurrency from '../components/SetDefaultCurrency';
+import SetThemeMode from '../components/SetThemeMode';
+import { Box } from '../theme';
+import useTheme from '../hooks/useTheme';
+import { useAppDispatch } from '../redux/hooks';
+import useCreateMessage from '../language/createMessage';
 
-  pickerBox: {
-    backgroundColor: theme.colors.white,
-    width: '90%',
-    borderRadius: 12,
-    marginTop: theme.spacing.xl,
-    padding: theme.spacing.m,
-    borderWidth: 1,
-    borderColor: theme.colors.lightGrey,
-  },
-});
+const styledTheme = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.mainBackgroundLight,
+    },
 
-// interface SettingsProps {}
-
+    pickerBox: {
+      backgroundColor: theme.colors.white,
+      width: '90%',
+      borderRadius: 12,
+      marginTop: theme.spacing.xl,
+      padding: theme.spacing.m,
+      borderWidth: 1,
+      borderColor: theme.colors.lightGrey,
+    },
+  });
 
 const Settings = () => {
-  return <>
-    {/* <OverlayLoader visible/> */}
-    <Box style={styles.container}>
-    <AppHeader title="Settings" dontShowBackButton/>
-    
-    <Box style={styles.pickerBox} alignSelf="center">
-      <SetThemeMode />
-      <SetDefaultCountry />
-      <SetDefaultCurrency/>
-    </Box>
-  
-    </Box>
-  
-  </>;
+  const theme = useTheme();
+  const { createMessage } = useCreateMessage();
+  const styles = styledTheme(theme);
+  const dispatch = useAppDispatch();
+  return (
+    <>
+      <Box style={styles.container}>
+        <AppHeader title={createMessage('SETTINGS')} dontShowBackButton />
+
+        <Box style={styles.pickerBox} alignSelf="center">
+          {/* <SetThemeMode /> */}
+          <SetDefaultCountry />
+          <SetDefaultCurrency />
+        </Box>
+      </Box>
+    </>
+  );
 };
 
 export default Settings;

@@ -3,72 +3,79 @@ import React from 'react';
 import { FlatList, Image, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Currency, Language, setLanguage } from '../redux/slice/country';
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import useTheme from '../hooks/useTheme';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: theme.spacing.xl,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-    backgroundColor: 'rgba(0,0,0,0.8)',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 35,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: theme.colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
+const styledTheme = (theme: any) => {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: theme.spacing.xl,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    width: '90%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: theme.spacing.m,
-  },
-  selectContainer: {
-    flexDirection: 'row',
-    borderBottomWidth: 2,
-    paddingVertical: theme.spacing.m,
-    paddingHorizontal: theme.spacing.m,
-    borderRadius: theme.spacing.s,
-    borderBottomColor: theme.colors.lightGrey,
-    alignItems: 'center',
-  },
-});
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+      backgroundColor: 'rgba(0,0,0,0.8)',
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 12,
+      padding: 35,
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: theme.colors.black,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      width: '90%',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      width: '100%',
+      marginBottom: theme.spacing.m,
+    },
+    selectContainer: {
+      flexDirection: 'row',
+      borderBottomWidth: 2,
+      paddingVertical: theme.spacing.m,
+      paddingHorizontal: theme.spacing.m,
+      borderRadius: theme.spacing.s,
+      borderBottomColor: theme.colors.lightGrey,
+      alignItems: 'center',
+    },
+  });
+};
 
 interface LanguageChangeModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
 }
 const LanguageChangeModal = (props: LanguageChangeModalProps) => {
+  const theme = useTheme();
+  const styles = styledTheme(theme);
   const activeLanguage = useAppSelector((state) => state.country.language);
   const dispatch = useAppDispatch();
   const languages: Language[] = [
     {
+      name: 'English',
       value: 'ENGLISH',
       flagUrl: 'https://flagcdn.com/w320/us.png',
     },
     {
-      value: 'SWAHILI',
+      name: 'Bemba',
+      value: 'BEMBA',
       flagUrl: 'https://flagcdn.com/w320/zm.png',
     },
   ];
@@ -87,7 +94,7 @@ const LanguageChangeModal = (props: LanguageChangeModalProps) => {
       >
         <Image source={{ uri: item.flagUrl }} style={{ width: 20, height: 15, borderRadius: 3 }} />
         <Text variant="body" ml="s" numberOfLines={1}>
-          {item.value}
+          {item.name}
         </Text>
       </Box>
     </TouchableOpacity>

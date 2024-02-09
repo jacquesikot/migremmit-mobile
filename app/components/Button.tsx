@@ -1,14 +1,15 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import theme, { Box, Text } from '../theme';
+import { Box, Text } from '../theme';
+import useTheme from '../hooks/useTheme';
 
 const styles = StyleSheet.create({
   container: {
     borderRadius: 8,
-    padding: theme.spacing.m,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 15,
   },
   text: {
     fontSize: 16,
@@ -25,6 +26,7 @@ interface ButtonProps {
 }
 
 const Button = ({ label, onPress, variant = 'primary', containerStyle, disabled, width }: ButtonProps) => {
+  const theme = useTheme();
   const backgroundColor = disabled
     ? theme.colors.backgroundDisabled
     : variant === 'primary'

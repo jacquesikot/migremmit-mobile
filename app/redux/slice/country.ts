@@ -15,8 +15,11 @@ export interface Currency {
 
 export interface Language {
   flagUrl: string;
-  value: 'ENGLISH' | 'SWAHILI';
+  value: 'ENGLISH' | 'BEMBA';
+  name: string;
 }
+
+export type ThemeMode = 'LIGHT' | 'DARK';
 
 interface CountryState {
   countries: Country[];
@@ -27,6 +30,7 @@ interface CountryState {
   fromCurrencies: Currency[];
   toCurrencies: Currency[];
   language: Language;
+  mode: ThemeMode;
 }
 
 export const defaultFromCurrencies: Currency[] = [
@@ -88,10 +92,12 @@ const initialState: CountryState = {
   language: {
     flagUrl: 'https://flagcdn.com/w320/us.png',
     value: 'ENGLISH',
+    name: 'English',
   },
+  mode: 'LIGHT',
 };
 
-const countrySlice = createSlice({
+const countrySlice: any = createSlice({
   name: 'country',
   initialState,
   reducers: {
@@ -135,10 +141,24 @@ const countrySlice = createSlice({
     setLanguage: (state, action: PayloadAction<Language>) => {
       state.language = action.payload;
     },
+    toggleTheme: (state) => {
+      if (state.mode === 'LIGHT') {
+        state.mode = 'DARK';
+      } else {
+        state.mode = 'LIGHT';
+      }
+    },
   },
 });
 
-export const { setCountries, setActiveFromCountry, setActiveToCountry, setFromCurrency, setToCurrency, setLanguage } =
-  countrySlice.actions;
+export const {
+  setCountries,
+  setActiveFromCountry,
+  setActiveToCountry,
+  setFromCurrency,
+  setToCurrency,
+  setLanguage,
+  toggleTheme,
+} = countrySlice.actions;
 
 export default countrySlice.reducer;

@@ -1,24 +1,25 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import storage from 'redux-persist/lib/storage';
 
 import countryReducer from './slice/country';
 
-const persistConfig = {
-  key: 'root',
-  storage: storage,
-};
+// const persistConfig = {
+//   key: 'root',
+//   storage: AsyncStorage,
+// };
 
-const persistedReducer = persistReducer(
-  persistConfig,
-  combineReducers({
-    country: countryReducer,
-  })
-);
+// const persistedReducer = persistReducer(
+//   persistConfig,
+//   combineReducers({
+//     country: countryReducer,
+//   })
+// );
 
 const store = configureStore({
-  reducer: persistedReducer,
+  reducer: combineReducers({
+    country: countryReducer,
+  }),
   // To fix "non-serializable value was detected in an action" error
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -3,11 +3,12 @@ import { Feather } from '@expo/vector-icons';
 
 import Settings from '../screens/Settings';
 import HomeNav from './HomeNav';
-import theme from '../theme';
+import useTheme from '../hooks/useTheme';
 
 const Tab = createBottomTabNavigator();
 
 function BottomTab() {
+  const theme = useTheme();
   return (
     <Tab.Navigator
       screenOptions={{
